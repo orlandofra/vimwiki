@@ -329,7 +329,17 @@ function! vimwiki#diary#make_note(wnum, ...) abort
     let link = 'diary:'.vimwiki#diary#diary_date_link()
   endif
 
+
+  " we check it existsd before calling open_link
+  " if it didnt exist, after creating we execute :X
+  " to crypt the file
+  let today_resolved = vimwiki#base#resolve_link(link)
+  let did_it_exist = filereadable(today_resolved.filename)
+
   call vimwiki#base#open_link(cmd, link, s:diary_index(wiki_nr))
+  if !did_it_exist
+        execute 'X'
+  endif
 endfunction
 
 
